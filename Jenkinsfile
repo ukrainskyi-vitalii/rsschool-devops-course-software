@@ -23,6 +23,12 @@ pipeline {
             }
         }
 
+        stage('Test Docker') {
+            steps {
+                sh 'docker --version'
+            }
+        }
+
         stage('Unit Test Execution') {
             steps {
                 sh "docker run --rm ${ECR_REPOSITORY}:${IMAGE_TAG} npm test"
