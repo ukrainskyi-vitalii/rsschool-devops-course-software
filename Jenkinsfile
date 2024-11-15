@@ -1,35 +1,35 @@
 pipeline {
-    agent {
+        agent {
         kubernetes {
             yaml """
-                apiVersion: v1
-                kind: Pod
-                metadata:
-                labels:
-                    jenkins: agent
-                spec:
-                containers:
-                - name: docker
-                    image: docker:20.10.12
-                    command:
-                    - "sh"
-                    args:
-                    - "-c"
-                    - "while true; do sleep 30; done;"
-                    securityContext:
-                    privileged: true
-                    volumeMounts:
-                    - name: docker-sock
-                    mountPath: /var/run/docker.sock
-                - name: jnlp
-                    image: jenkins/inbound-agent:latest
-                    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-                volumes:
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              labels:
+                jenkins: agent
+            spec:
+              containers:
+              - name: docker
+                image: docker:27.3.1-dind
+                command:
+                - "dockerd-entrypoint.sh"
+                args:
+                - "--host=tcp://0.0.0.0:2375"
+                - "--host=unix:///var/run/docker.sock"
+                securityContext:
+                  privileged: true
+                volumeMounts:
                 - name: docker-sock
-                    hostPath:
-                    path: /var/run/docker.sock
-                """
-                        }
+                  mountPath: /var/run/docker.sock
+              - name: jnlp
+                image: jenkins/inbound-agent:latest
+                args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+              volumes:
+              - name: docker-sock
+                hostPath:
+                  path: /var/run/docker.sock
+            """
+        }
     }
 
     environment {
