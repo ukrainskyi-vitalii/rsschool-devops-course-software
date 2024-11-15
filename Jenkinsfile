@@ -1,5 +1,36 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            yaml """
+                apiVersion: v1
+                kind: Pod
+                metadata:
+                labels:
+                    jenkins: agent
+                spec:
+                containers:
+                - name: docker
+                    image: docker:20.10.12
+                    command:
+                    - "sh"
+                    args:
+                    - "-c"
+                    - "while true; do sleep 30; done;"
+                    securityContext:
+                    privileged: true
+                    volumeMounts:
+                    - name: docker-sock
+                    mountPath: /var/run/docker.sock
+                - name: jnlp
+                    image: jenkins/inbound-agent:latest
+                    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
+                volumes:
+                - name: docker-sock
+                    hostPath:
+                    path: /var/run/docker.sock
+                """
+                        }
+    }
 
     environment {
         AWS_CREDENTIALS_ID = 'aws-credentials'
