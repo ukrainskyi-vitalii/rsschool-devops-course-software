@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         AWS_CREDENTIALS_ID = 'aws-credentials'
-        ECR_REPOSITORY = '590184028943.dkr.ecr.eu-west-1.amazonaws.com/rs-school_app'
+        ECR_REPOSITORY = '590184028943.dkr.ecr.eu-west-1.amazonaws.com/rs-school_app/'
         IMAGE_TAG = "latest"
         SONARQUBE_SCANNER = 'SonarQube Scanner'
         KUBECONFIG_CREDENTIALS_ID = 'kubeconfig-credentials'
@@ -17,15 +17,15 @@ pipeline {
             }
         }
 
-        stage('Application Build') {
-            steps {
-                sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
-            }
-        }
-
         stage('Test Docker') {
             steps {
                 sh 'docker --version'
+            }
+        }
+
+        stage('Application Build') {
+            steps {
+                sh "docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} ."
             }
         }
 
