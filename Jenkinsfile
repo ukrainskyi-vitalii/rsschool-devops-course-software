@@ -38,16 +38,16 @@ pipeline {
             }
           }
         }
-    stage('Application Build') {
-        steps {
+        stage('Application Build') {
+          steps {
             container('node') {
-                sh '''
-                cd rs-school_app
-                npm install
-                npm run build
-                '''
-                }
+              sh '''
+              cd rs-school_app
+              npm install
+              npm run build
+              '''
             }
+          }
         }
     }
 }
