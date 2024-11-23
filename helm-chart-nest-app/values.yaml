@@ -74,3 +74,4 @@ volumeMounts: []
 nodeSelector: {}
 tolerations: []
 affinity: {}
+namespace: jenkins
