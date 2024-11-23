@@ -19,6 +19,12 @@ pipeline {
                 - 99d
                 securityContext:
                   privileged: true
+                command:
+                - sh
+                args:
+                - -c
+                - |
+                  dockerd & sleep 99d
               - name: helm
                 image: alpine/helm:3.9.0
                 command:
