@@ -55,5 +55,16 @@ pipeline {
             }
           }
         }
+        stage('Unit Test Execution') {
+          steps {
+              container('node') {
+                  sh '''
+                  cd rs-school_app
+                  npm install
+                  npm run test
+                  '''
+              }
+          }
+        }
     }
 }
