@@ -12,7 +12,7 @@ pipeline {
                 image: jenkins/inbound-agent
                 args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
               - name: custom-docker-with-aws
-                image: 590184028943.dkr.ecr.eu-west-1.amazonaws.com/custom-docker-with-aws
+                image: 590184028943.dkr.ecr.eu-west-1.amazonaws.com/custom-docker-with-aws:latest
                 command:
                 - sleep
                 args:
