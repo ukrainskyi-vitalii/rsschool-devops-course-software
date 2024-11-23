@@ -21,6 +21,12 @@ pipeline {
                 - sleep
                 args:
                 - 99d
+              - name: node
+                image: node:18-alpine
+                command:
+                - sleep
+                args:
+                - 99d
             """
         }
     }
