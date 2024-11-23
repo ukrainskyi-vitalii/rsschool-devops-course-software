@@ -94,6 +94,11 @@ pipeline {
                 }
             }
         }
+        stage('Approve Docker Push') {
+            steps {
+                input message: 'Do you want to push the Docker image to ECR?'
+            }
+        }
         stage('Docker Build and Push to ECR') {
             steps {
                 container('docker') {
@@ -102,6 +107,20 @@ pipeline {
                         aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_URL
                         docker build -t $ECR_URL/$IMAGE_NAME:$IMAGE_TAG ./rs-school_app
                         docker push $ECR_URL/$IMAGE_NAME:$IMAGE_TAG
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Deploy to K8s with Helm') {
+            steps {
+                container('helm') {
+                    script {
+                        sh '''
+                        helm upgrade --install rs-school-app ./helm-chart-nest-app \
+                            --namespace $KUBE_NAMESPACE \
+                            --set image.repository=$ECR_URL/$IMAGE_NAME \
+                            --set image.tag=$IMAGE_TAG
                         '''
                     }
                 }
