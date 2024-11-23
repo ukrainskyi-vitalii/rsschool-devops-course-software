@@ -61,7 +61,7 @@ pipeline {
         ECR_URL = "590184028943.dkr.ecr.eu-west-1.amazonaws.com"
         IMAGE_NAME = "rs-school_app"
         IMAGE_TAG = "latest"
-        KUBE_NAMESPACE = "default"
+        KUBE_NAMESPACE = "jenkins"
     }
     stages {
         stage('Test') {
