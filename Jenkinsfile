@@ -15,11 +15,11 @@ pipeline {
                 image: 590184028943.dkr.ecr.eu-west-1.amazonaws.com/custom-docker-with-aws:latest
                 resources:
                   requests:
-                    memory: "512Mi"
-                    cpu: "500m"
-                  limits:
                     memory: "1Gi"
                     cpu: "1"
+                  limits:
+                    memory: "2Gi"
+                    cpu: "2"
                 securityContext:
                   privileged: true
                 env:
@@ -32,13 +32,6 @@ pipeline {
                 - --storage-driver=overlay2
               - name: helm
                 image: alpine/helm:3.9.0
-                resources:
-                  requests:
-                    memory: "256Mi"
-                    cpu: "250m"
-                  limits:
-                    memory: "512Mi"
-                    cpu: "500m"
                 command:
                 - sleep
                 args:
