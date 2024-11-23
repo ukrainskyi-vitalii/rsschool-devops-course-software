@@ -11,7 +11,7 @@ pipeline {
               - name: jnlp
                 image: jenkins/inbound-agent
                 args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-              - name: custom-docker-with-aws
+              - name: docker
                 image: 590184028943.dkr.ecr.eu-west-1.amazonaws.com/custom-docker-with-aws:latest
                 command:
                 - sleep
@@ -41,11 +41,46 @@ pipeline {
     stages {
         stage('Test') {
           steps {
-            container('custom-docker-with-aws') {
+            container('docker') {
               sh 'docker --version'
               sh 'aws --version'
             }
           }
+        }
+        stage('Application Build') {
+          steps {
+            container('node') {
+              sh '''
+              cd rs-school_app
+              npm install
+              npm run build
+              '''
+            }
+          }
+        }
+        stage('Unit Test Execution') {
+          steps {
+              container('node') {
+                  sh '''
+                  cd rs-school_app
+                  npm install
+                  npm run test
+                  '''
+              }
+          }
+        }
+        stage('Docker Build and Push to ECR') {
+            steps {
+                container('docker') {
+                    script {
+                        sh '''
+                        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_URL
+                        docker build -t $ECR_URL/$IMAGE_NAME:$IMAGE_TAG ./rs-school_app
+                        docker push $ECR_URL/$IMAGE_NAME:$IMAGE_TAG
+                        '''
+                    }
+                }
+            }
         }
     }
 }
