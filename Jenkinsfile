@@ -17,6 +17,8 @@ pipeline {
                 - sleep
                 args:
                 - 99d
+                securityContext:
+                  privileged: true
               - name: helm
                 image: alpine/helm:3.9.0
                 command:
@@ -43,6 +45,7 @@ pipeline {
           steps {
             container('docker') {
               sh 'docker --version'
+              sh 'docker info'
               sh 'aws --version'
             }
           }
