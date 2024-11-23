@@ -27,6 +27,12 @@ pipeline {
                 - sleep
                 args:
                 - 99d
+              - name: sonar-scanner
+                image: sonarsource/sonar-scanner-cli:latest
+                command:
+                - sleep
+                args:
+                - 99d
             """
         }
     }
@@ -65,6 +71,31 @@ pipeline {
                   '''
               }
           }
+        }
+        stage('Docker Build and Push to ECR') {
+            steps {
+                container('docker') {
+                    script {
+                        sh '''
+                        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_URL
+                        docker build -t $ECR_URL/$IMAGE_NAME:$IMAGE_TAG ./rs-school_app
+                        docker push $ECR_URL/$IMAGE_NAME:$IMAGE_TAG
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Deploy to Kubernetes with Helm') {
+            steps {
+                container('helm') {
+                    sh '''
+                    helm upgrade --install rs-school-app ./helm-chart-nest-app \
+                        --namespace $KUBE_NAMESPACE \
+                        --set image.repository=$ECR_URL/$IMAGE_NAME \
+                        --set image.tag=$IMAGE_TAG
+                    '''
+                }
+            }
         }
     }
 }
