@@ -94,11 +94,11 @@ pipeline {
                 }
             }
         }
-        stage('Approve Docker Push') {
+        /*stage('Approve Docker Push') {
             steps {
                 input message: 'Do you want to push the Docker image to ECR?'
             }
-        }
+        }*/
         stage('Docker Build and Push to ECR') {
             steps {
                 container('docker') {
