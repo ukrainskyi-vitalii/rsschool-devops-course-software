@@ -5,11 +5,13 @@ pipeline {
             apiVersion: v1
             kind: Pod
             spec:
+              imagePullSecrets:
+              - name: ecr-secret
               containers:
               - name: jnlp
                 image: jenkins/inbound-agent
                 args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-              - name: docker
+              - name: custom-docker-with-aws
                 image: 590184028943.dkr.ecr.eu-west-1.amazonaws.com/custom-docker-with-aws:latest
                 command:
                 - sleep
@@ -39,7 +41,7 @@ pipeline {
     stages {
         stage('Test') {
           steps {
-            container('docker') {
+            container('custom-docker-with-aws') {
               sh 'docker --version'
               sh 'aws --version'
             }
