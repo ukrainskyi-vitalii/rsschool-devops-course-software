@@ -10,7 +10,7 @@ pipeline {
                 image: jenkins/inbound-agent
                 args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
               - name: docker
-                image: docker:24.0.2
+                image: docker
                 command:
                 - sleep
                 args:
@@ -31,6 +31,13 @@ pipeline {
         KUBE_NAMESPACE = "default"
     }
     stages {
+        stage('Test') {
+          steps {
+            container('docker') {
+              sh 'docker --version'
+            }
+          }
+        }
         stage('Checkout Code') {
             steps {
                 checkout scm
