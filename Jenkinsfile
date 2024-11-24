@@ -62,7 +62,7 @@ pipeline {
         IMAGE_NAME = "rs-school_app"
         IMAGE_TAG = "latest"
         KUBE_NAMESPACE = "jenkins"
-        AWS_CREDENTIALS = "aws_credentials",
+        AWS_CREDENTIALS = "aws_credentials"
         SONAR_PROJECT_KEY = "rs-school-app"
     }
     parameters {
