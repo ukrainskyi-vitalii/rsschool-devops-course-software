@@ -68,7 +68,7 @@ pipeline {
         booleanParam(name: 'PUSH_TO_ECR', defaultValue: false, description: 'Do you want to push the Docker image to ECR?')
     }
     stages {
-        stage('Create ECR Secret') {
+        /*stage('Create ECR Secret') {
             steps {
                 container('docker') {
                     withCredentials([[
@@ -85,8 +85,8 @@ pipeline {
                     }
                 }
             }
-        }
-        stage('Test') {
+        }*/
+        /*stage('Test') {
             steps {
                 container('docker') {
                     sh '''
@@ -119,7 +119,7 @@ pipeline {
                     '''
                 }
             }
-        }
+        }*/
         /*stage('Approve Docker Push') {
             steps {
                 input message: 'Do you want to push the Docker image to ECR?'
@@ -146,7 +146,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to K8s with Helm') {
+        /*stage('Deploy to K8s with Helm') {
             steps {
                 container('helm') {
                     script {
@@ -161,6 +161,6 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
     }
 }
