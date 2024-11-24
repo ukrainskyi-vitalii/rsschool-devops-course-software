@@ -64,6 +64,19 @@ pipeline {
         KUBE_NAMESPACE = "jenkins"
     }
     stages {
+        stage('Create ECR Secret') {
+            steps {
+                container('docker') {
+                    sh '''
+                    aws ecr get-login-password --region eu-west-1 | kubectl create secret docker-registry ecr-secret \
+                        --docker-server=590184028943.dkr.ecr.eu-west-1.amazonaws.com \
+                        --docker-username=AWS \
+                        --docker-password-stdin \
+                        --namespace jenkins || echo "Secret already exists"
+                    '''
+                }
+            }
+        }
         stage('Test') {
             steps {
                 container('docker') {
