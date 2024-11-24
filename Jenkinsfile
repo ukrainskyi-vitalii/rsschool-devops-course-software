@@ -49,6 +49,12 @@ pipeline {
                 - sleep
                 args:
                 - 99d
+              - name: sonar
+                image: sonarsource/sonar-scanner-cli:4.8
+                command:
+                - sleep
+                args:
+                - 99d
               volumes:
               - name: docker-sock-volume
                 hostPath:
@@ -64,6 +70,8 @@ pipeline {
         KUBE_NAMESPACE = "jenkins"
         AWS_CREDENTIALS = "aws_credentials"
         SONAR_PROJECT_KEY = "rs-school-app"
+        SONAR_HOST_URL = "http://sonarqube.jenkins.svc.cluster.local:9000"
+        SONAR_AUTH_TOKEN = credentials('sonar-auth-token')
     }
     parameters {
         booleanParam(name: 'PUSH_TO_ECR', defaultValue: false, description: 'Do you want to push the Docker image to ECR?')
@@ -123,6 +131,19 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
+                container('sonar') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh '''
+                        sonar-scanner \
+                          -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                          -Dsonar.sources=./rs-school_app/src \
+                          -Dsonar.host.url=$SONAR_HOST_URL \
+                          -Dsonar.login=$SONAR_AUTH_TOKEN \
+                          -Dsonar.exclusions=**/node_modules/**,**/*.test.js \
+                          -Dsonar.javascript.lcov.reportPaths=./rs-school_app/coverage/lcov.info
+                        '''
+                    }
+                }
                 script {
                     echo 'SonarQube analysis completed successfully!'
                 }
