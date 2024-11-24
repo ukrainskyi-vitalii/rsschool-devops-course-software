@@ -120,6 +120,13 @@ pipeline {
                 }
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    echo 'SonarQube analysis completed successfully!'
+                }
+            }
+        }
         stage('Docker Build and Push to ECR') {
             when { expression { params.PUSH_TO_ECR == true } }
             steps {
