@@ -69,7 +69,7 @@ pipeline {
         booleanParam(name: 'PUSH_TO_ECR', defaultValue: false, description: 'Do you want to push the Docker image to ECR?')
     }
     stages {
-        stage('Create ECR Secret') {
+        /*stage('Create ECR Secret') {
             steps {
                 container('docker') {
                     withCredentials([[
@@ -164,7 +164,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
     }
     post {
         success {
