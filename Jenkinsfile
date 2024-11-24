@@ -64,6 +64,9 @@ pipeline {
         KUBE_NAMESPACE = "jenkins"
         AWS_CREDENTIALS = "aws_credentials"
     }
+    parameters {
+        booleanParam(name: 'PUSH_TO_ECR', defaultValue: false, description: 'Do you want to push the Docker image to ECR?')
+    }
     stages {
         stage('Create ECR Secret') {
             steps {
@@ -123,14 +126,22 @@ pipeline {
             }
         }*/
         stage('Docker Build and Push to ECR') {
+            when { expression { params.PUSH_TO_ECR == true } }
             steps {
-                container('docker') {
-                    script {
-                        sh '''
-                        aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_URL
-                        docker build -t $ECR_URL/$IMAGE_NAME:$IMAGE_TAG ./rs-school_app
-                        docker push $ECR_URL/$IMAGE_NAME:$IMAGE_TAG
-                        '''
+                script {
+                    if (currentBuild.result != 'FAILURE') {
+                        env.PUSH_SUCCESSFUL = true
+                    } else {
+                        env.PUSH_SUCCESSFUL = false
+                    }
+                    container('docker') {
+                        script {
+                            sh '''
+                            aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR_URL
+                            docker build -t $ECR_URL/$IMAGE_NAME:$IMAGE_TAG ./rs-school_app
+                            docker push $ECR_URL/$IMAGE_NAME:$IMAGE_TAG
+                            '''
+                        }
                     }
                 }
             }
