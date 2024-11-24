@@ -12,7 +12,7 @@ pipeline {
                 image: jenkins/inbound-agent
                 args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
               - name: docker
-                image: docker:stable-dind
+                image: image: 590184028943.dkr.ecr.eu-west-1.amazonaws.com/custom-docker-with-aws:latest
                 resources:
                   requests:
                     memory: "1Gi"
@@ -30,7 +30,6 @@ pipeline {
                 args:
                 - --host=unix:///var/run/docker.sock
                 - --storage-driver=overlay2
-                - --exec-opt=native.cgroupdriver=systemd
               - name: helm
                 image: alpine/helm:3.9.0
                 command:
