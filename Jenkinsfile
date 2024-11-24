@@ -30,6 +30,7 @@ pipeline {
                 args:
                 - --host=unix:///var/run/docker.sock
                 - --storage-driver=overlay2
+                - --exec-opt=native.cgroupdriver=systemd
               - name: helm
                 image: alpine/helm:3.9.0
                 command:
