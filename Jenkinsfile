@@ -62,7 +62,8 @@ pipeline {
         IMAGE_NAME = "rs-school_app"
         IMAGE_TAG = "latest"
         KUBE_NAMESPACE = "jenkins"
-        AWS_CREDENTIALS = "aws_credentials"
+        AWS_CREDENTIALS = "aws_credentials",
+        SONAR_PROJECT_KEY = "rs-school-app"
     }
     parameters {
         booleanParam(name: 'PUSH_TO_ECR', defaultValue: false, description: 'Do you want to push the Docker image to ECR?')
