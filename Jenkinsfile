@@ -70,7 +70,7 @@ pipeline {
                 container('docker') {
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: $AWS_CREDENTIALS
+                        credentialsId: AWS_CREDENTIALS
                     ]]) {
                         sh '''
                         aws ecr get-login-password --region eu-west-1 | kubectl create secret docker-registry ecr-secret \
