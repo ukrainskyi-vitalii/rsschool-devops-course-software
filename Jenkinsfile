@@ -61,19 +61,25 @@ pipeline {
         ECR_URL = "590184028943.dkr.ecr.eu-west-1.amazonaws.com"
         IMAGE_NAME = "rs-school_app"
         IMAGE_TAG = "latest"
-        KUBE_NAMESPACE = "jenkins"
+        KUBE_NAMESPACE = "jenkins",
+        AWS_CREDENTIALS = "aws_credentials"
     }
     stages {
         stage('Create ECR Secret') {
             steps {
                 container('docker') {
-                    sh '''
-                    aws ecr get-login-password --region eu-west-1 | kubectl create secret docker-registry ecr-secret \
-                        --docker-server=590184028943.dkr.ecr.eu-west-1.amazonaws.com \
-                        --docker-username=AWS \
-                        --docker-password-stdin \
-                        --namespace jenkins || echo "Secret already exists"
-                    '''
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: $AWS_CREDENTIALS
+                    ]]) {
+                        sh '''
+                        aws ecr get-login-password --region eu-west-1 | kubectl create secret docker-registry ecr-secret \
+                            --docker-server=590184028943.dkr.ecr.eu-west-1.amazonaws.com \
+                            --docker-username=AWS \
+                            --docker-password-stdin \
+                            --namespace jenkins || echo "Secret already exists"
+                        '''
+                    }
                 }
             }
         }
