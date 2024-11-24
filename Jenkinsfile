@@ -142,6 +142,8 @@ pipeline {
                         sh '''
                         helm upgrade --install rs-school-app ./helm-chart-nest-app \
                             --namespace $KUBE_NAMESPACE \
+                            --set serviceAccount.create=false \
+                            --set serviceAccount.name=jenkins \
                             --set image.repository=$ECR_URL/$IMAGE_NAME \
                             --set image.tag=$IMAGE_TAG
                         '''
