@@ -86,7 +86,7 @@ pipeline {
                     }
                 }
             }
-        }/*
+        }
         stage('Test') {
             steps {
                 container('docker') {
@@ -164,7 +164,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
     }
 post {
     success {
