@@ -165,4 +165,34 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            emailext(
+                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                Build ${env.BUILD_NUMBER} of job '${env.JOB_NAME}' was successful.
+
+                Project: ${SONAR_PROJECT_KEY}
+                SonarQube Quality Gate: PASSED
+
+                View the results: ${env.BUILD_URL}
+                """,
+                to: 'ukrainskyi.vitalii@gmail.com'
+            )
+        }
+        failure {
+            emailext(
+                subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                Build ${env.BUILD_NUMBER} of job '${env.JOB_NAME}' has failed.
+
+                Project: ${SONAR_PROJECT_KEY}
+                SonarQube Quality Gate: FAILED or another error occurred.
+
+                View the results: ${env.BUILD_URL}
+                """,
+                to: 'ukrainskyi.vitalii@gmail.com'
+            )
+        }
+    }
 }
