@@ -86,8 +86,12 @@ pipeline {
         stage('Test') {
             steps {
                 container('docker') {
-                    sh 'docker --version'
-                    sh 'aws --version'
+                    sh '''
+                    apk add --no-cache python3 py3-pip
+                    pip install --no-cache-dir awscli
+                    docker --version
+                    aws --version
+                    '''
                 }
             }
         }
